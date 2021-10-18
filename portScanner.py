@@ -2,6 +2,7 @@
 # ping a list of host with threads for increase speed
 # use standard linux /bin/ping utility
 import random
+import threading
 from socket import socket
 from threading import Thread
 import subprocess
@@ -11,6 +12,8 @@ try:
 except ImportError:
     import Queue as queue
 import re
+import time
+
 
 # some global vars
 num_threads = 32
@@ -64,31 +67,59 @@ def thread_pinger(i, q):
         # update queue : this ip is processed
         q.task_done()
 
+#prevents double modification of shared variables.
+#when one thread uses a variable, other can't access it.
+#Once done, the thread relases it.
 
-# start the thread pool
-for i in range(num_threads):
-    worker = Thread(target=thread_pinger, args=(i, ips_q))
-    worker.setDaemon(True)
-    worker.start()
-
-# fill queue
-for ip in ips:
-    ips_q.put(ip)
-
-# wait until worker threads are done to exit
-
-ips_q.join()
-
-# adds hosts to list.
-Hostsup = []
-while True:
+lock = threading.Lock()
+def test_port(ipAddress, target, port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        msg = out_q.get_nowait()
+        conn = s.connect((target, port))
+        with lock:
+            print('port',port)
+        conn.close()
+    except:
+        pass
 
-    except queue.Empty:
-        break
-    Hostsup.append(msg)
-    print(" hello" + msg)
 
-for i in range(len(hosts_up)):
-    print(hosts_up[i],)
+
+
+
+
+def main():
+    # start the thread pool
+    for i in range(num_threads):
+        worker = Thread(target=thread_pinger, args=(i, ips_q))
+        worker.setDaemon(True)
+        worker.start()
+
+    # fill queue
+    for ip in ips:
+        ips_q.put(ip)
+
+    # wait until worker threads are done to exit
+
+    ips_q.join()
+
+    # adds hosts to list.
+    Hostsup = []
+    while True:
+        try:
+            msg = out_q.get_nowait()
+
+        except queue.Empty:
+            break
+        Hostsup.append(msg)
+    return Hostsup
+
+    print("Hosts up: ")
+    for i in range(len(hosts_up)):
+        print("Host: " + hosts_up[i],)
+
+
+if __name__ == "__main__":
+    main()
+
+
+
