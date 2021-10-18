@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # ping a list of host with threads for increase speed
 # use standard linux /bin/ping utility
-import random
+
 import threading
 from socket import socket
 from threading import Thread
@@ -14,29 +14,17 @@ except ImportError:
 import re
 import time
 
-
 # some global vars
 num_threads = 32
 ips_q = queue.Queue()
 out_q = queue.Queue()
 
 # build IP array
-
 ips = []
 for i in range(1, 102):
     ips.append("192.168.0." + str(i))
 
-# build IP array
-# ips = []
-# for i in range(1000):
-#    num1 = random.randint(1, 191)
-#    num2 = random.randint(0, 255)
-#    num3 = random.randint(0, 255)
-#    num4 = random.randint(0, 255)
-#    ipAddr = str(num1) + "." + str(num2) + "." + str(num3) + "." + str(num4)
-#    ips.append(ipAddr)
 hosts_up = []
-
 
 # thread code : wraps system ping command
 def thread_pinger(i, q):
@@ -62,7 +50,6 @@ def thread_pinger(i, q):
             # adds responding hosts to array.
             hosts_up.append(str(ip_address))
 
-
         # update queue : this ip is processed
         q.task_done()
 
@@ -79,11 +66,6 @@ def test_port(ipAddress, target, port):
         conn.close()
     except:
         pass
-
-
-
-
-
 
 def main():
     # start the thread pool
