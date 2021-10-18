@@ -62,7 +62,6 @@ def thread_pinger(i, q):
             # adds responding hosts to array.
             hosts_up.append(str(ip_address))
 
-            # build  the method here that will portscan the hosts.
 
         # update queue : this ip is processed
         q.task_done()
@@ -70,7 +69,6 @@ def thread_pinger(i, q):
 #prevents double modification of shared variables.
 #when one thread uses a variable, other can't access it.
 #Once done, the thread relases it.
-
 lock = threading.Lock()
 def test_port(ipAddress, target, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -99,24 +97,12 @@ def main():
         ips_q.put(ip)
 
     # wait until worker threads are done to exit
-
     ips_q.join()
-
-    # adds hosts to list.
-    Hostsup = []
-    while True:
-        try:
-            msg = out_q.get_nowait()
-
-        except queue.Empty:
-            break
-        Hostsup.append(msg)
-    return Hostsup
 
     print("Hosts up: ")
     for i in range(len(hosts_up)):
         print("Host: " + hosts_up[i],)
-
+    return hosts_up
 
 if __name__ == "__main__":
     main()
