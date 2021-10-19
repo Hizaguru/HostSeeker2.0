@@ -69,18 +69,19 @@ def thread_pinger(i, q):
 #     except:
 #         pass
 
-
+#Detects OS System and hostname with host parameter..
 def detectOS(host):
     nm = nmap.PortScanner()
     machine = nm.scan(host, arguments='-O')
     try:
         hostname = socket.gethostbyaddr(host)[0]
         hostDict = {hostname: host}
-        print(colored(f"The Host(s): '{hostDict}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0][
+        print(colored(f"The Host(s): '{hostDict}' os system is " + machine['scan'][host]['osmatch'][0]['osclass'][0][
                     'osfamily'],'green'))
     except socket.error:
-        print(colored(f"Couldn't detect host's '{host}' hostname.", 'red'), colored(
-            f"The Host(s): '{host}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0]['osfamily'],'green'))g
+        print(colored(f"Unable to detect host's '{host}' hostname.", 'red'), colored(
+            f"The Host(s): '{host}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0]['osfamily'],
+            'green'))
         pass
 
 
@@ -101,11 +102,7 @@ def main():
 
     print("Hosts up: ")
     for i in range(len(hosts_up)):
-        try:
-            detectOS(hosts_up[i])
-        except:
-            print(colored("Unknown hostname", 'red'))
-        pass
+        detectOS(hosts_up[i])
 
     return hosts_up
 
