@@ -1,26 +1,21 @@
-import time
+import socket
+
 import nmap
 from termcolor import colored
-from visuals import visuals
-
-# A List of Items
-items = list(range(0, 57))
-l = len(items)
-
-p1 = visuals
-# Initial call to print 0% progress
-p1.printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
-time.sleep(3)
-p1.printProgressBar(57, l, prefix='Progress:', suffix='Complete', length=50)
-time.sleep(3)
 
 
-
-
-
-print("Testing.....")
-for i, item in enumerate(items):
-
-    time.sleep(0.1)
-    # Update Progress Bar
-    p1.printProgressBar(i + 1, l, prefix='Progress:', suffix='Complete', length=50)
+def detectOS(host):
+    nm = nmap.PortScanner()
+    machine = nm.scan(host, arguments='-O')
+    try:
+        hostname = socket.gethostbyaddr(host)[0]
+        hostDict = {hostname: host}
+        print(colored(f"The Host(s): '{hostDict}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0][
+                    'osfamily'],'green'))
+    except socket.error:
+        print(colored(f"Couldn't detect host's '{host}' hostname.", 'red'), colored(
+            f"The Host(s): '{host}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0]['osfamily'],'green'))
+        # print(colored(
+        #     f"The Host(s): '{host}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0]['osfamily'],'green'))
+        pass
+detectOS('192.168.0.104')
