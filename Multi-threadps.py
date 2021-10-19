@@ -1,5 +1,6 @@
 
 import socket, threading
+from twisted.python.compat import raw_input
 
 host = raw_input("Enter an address to scan: ")
 ip = socket.gethostbyname(host)
@@ -36,9 +37,9 @@ def scan_ports(ip, delay):
 
     for i in range (0, 1023):
         if open_ports[i] == 'open':
-            print '\nport number ' + str(i) + ' is open'
+            print('\nport number ' + str(i) + ' is open')
         if i == 1022:
-            print '\nscan complete!'
+            print('\nscan complete!')
 
 if __name__ == "__main__":
     scan_ports(ip, 3)

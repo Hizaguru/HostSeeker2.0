@@ -70,14 +70,14 @@ def test_port(ipAddress, target, port):
         pass
 
 
-def detectOS(ip):
+def detectOS(host):
     nm = nmap.PortScanner()
-    machine = nm.scan(ip, arguments='-O')
+    machine = nm.scan(host, arguments='-O')
     try:
-        print(colored("The Host(s): " + ip + " os system: " + machine['scan'][ip]['osmatch'][0]['osclass'][0]['osfamily'],
+        print(colored(f"The Host(s): '{host}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0]['osfamily'],
                       'green'))
     except:
-        print(colored("Couldn't detect host's OS", 'red'))
+        print(colored(f"Couldn't detect host's '{host}' OS", 'red'))
         pass
 
 
