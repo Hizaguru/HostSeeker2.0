@@ -7,6 +7,7 @@ from socket import socket
 from threading import Thread
 import subprocess
 from termcolor import colored
+from visuals import visuals
 import nmap
 
 try:
@@ -58,16 +59,16 @@ def thread_pinger(i, q):
 #prevents double modification of shared variables.
 #when one thread uses a variable, other can't access it.
 #Once done, the thread relases it.
-lock = threading.Lock()
-def test_port(ipAddress, target, port):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        conn = s.connect((target, port))
-        with lock:
-            print('port',port)
-        conn.close()
-    except:
-        pass
+# lock = threading.Lock()
+# def test_port(ipAddress, target, port):
+#     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#     try:
+#         conn = s.connect((target, port))
+#         with lock:
+#             print('port',port)
+#         conn.close()
+#     except:
+#         pass
 
 
 def detectOS(host):
