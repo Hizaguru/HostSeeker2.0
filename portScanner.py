@@ -6,13 +6,15 @@ import threading
 from socket import socket
 from threading import Thread
 import subprocess
+from termcolor import colored
+import nmap
 
 try:
     import queue
 except ImportError:
     import Queue as queue
 import re
-import time
+
 
 # some global vars
 num_threads = 32
@@ -21,7 +23,7 @@ out_q = queue.Queue()
 
 # build IP array
 ips = []
-for i in range(1, 102):
+for i in range(1, 105):
     ips.append("192.168.0." + str(i))
 
 hosts_up = []
@@ -67,6 +69,19 @@ def test_port(ipAddress, target, port):
     except:
         pass
 
+
+def detectOS(ip):
+    nm = nmap.PortScanner()
+    machine = nm.scan(ip, arguments='-O')
+    try:
+        print(colored("The Host(s): " + ip + " os system: " + machine['scan'][ip]['osmatch'][0]['osclass'][0]['osfamily'],
+                      'green'))
+    except:
+        print(colored("Couldn't detect host's OS", 'red'))
+        pass
+
+
+
 def main():
     # start the thread pool
     for i in range(num_threads):
@@ -83,7 +98,8 @@ def main():
 
     print("Hosts up: ")
     for i in range(len(hosts_up)):
-        print("Host: " + hosts_up[i],)
+        detectOS(hosts_up[i])
+
     return hosts_up
 
 if __name__ == "__main__":
