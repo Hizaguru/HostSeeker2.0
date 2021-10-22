@@ -4,6 +4,7 @@
 
 
 import socket
+import sys
 from threading import Thread
 import subprocess
 from termcolor import colored
@@ -82,6 +83,12 @@ def detectOS(host):
         print(colored(f"Unable to detect host's '{host}' hostname.", 'red'), colored(
             f"The Host(s): '{host}' os system: " + machine['scan'][host]['osmatch'][0]['osclass'][0]['osfamily'],
             'green'))
+    except KeyboardInterrupt:
+        print("\n Exitting Program !!!!")
+        sys.exit()
+
+    except IndexError:
+        print(colored(f"Unable to detect host's {host} Operating system... ",'red'), colored("But my lucky guess: Some Windows Based server OS", 'green'))
         pass
 
 
@@ -104,7 +111,7 @@ def main():
     for i in range(len(hosts_up)):
         detectOS(hosts_up[i])
 
-    return hosts_up
+
 
 if __name__ == "__main__":
     main()
